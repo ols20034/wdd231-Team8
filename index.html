@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shelfwise: search for books and keep track of what you want to read and what you've finished.">
+  <title>Shelfwise | Find Your Next Book</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/home.css">
+  <!-- JS: modules get wired up after the checkpoint -->
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <span class="logo-mark" aria-hidden="true">📚</span>
+        <span class="logo-text">Shelfwise</span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html" aria-current="page">Search</a></li>
+          <li><a href="shelves.html">My Shelves</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container">
+        <h1>Find your next favorite book</h1>
+        <p class="hero-sub">Search millions of titles, then save them to your shelves.</p>
+
+        <!-- JS: on submit, read these values and call the Open Library search API -->
+        <form class="search-form" action="index.html" method="get" role="search">
+          <div class="field search-field">
+            <label for="search-query">Search for a book</label>
+            <input type="search" id="search-query" name="q" placeholder="e.g. Pride and Prejudice" required minlength="2">
+          </div>
+          <div class="field">
+            <label for="search-type">Search by</label>
+            <select id="search-type" name="type">
+              <option value="title">Title</option>
+              <option value="author">Author</option>
+              <option value="subject">Subject</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="results container" aria-labelledby="results-heading">
+      <div class="results-header">
+        <h2 id="results-heading">Popular right now</h2>
+        <div class="field field-inline">
+          <label for="sort-results">Sort</label>
+          <select id="sort-results" name="sort">
+            <option value="relevance">Most relevant</option>
+            <option value="new">Newest first</option>
+            <option value="old">Oldest first</option>
+            <option value="title">Title A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- JS: replace these hard-coded cards with cards built from the API results (ui.js) -->
+      <!-- The ?id= values are placeholders. Replace them with real Open Library work keys. -->
+      <ul class="book-grid">
+        <li class="book-card">
+          <a href="book.html?id=OL0001W">
+            <div class="cover cover-1" aria-hidden="true"><span>Pride and Prejudice</span></div>
+            <h3 class="book-title">Pride and Prejudice</h3>
+            <p class="book-author">Jane Austen</p>
+            <p class="book-year">1813</p>
+          </a>
+        </li>
+        <li class="book-card">
+          <a href="book.html?id=OL0002W">
+            <div class="cover cover-2" aria-hidden="true"><span>Frankenstein</span></div>
+            <h3 class="book-title">Frankenstein</h3>
+            <p class="book-author">Mary Shelley</p>
+            <p class="book-year">1818</p>
+          </a>
+        </li>
+        <li class="book-card">
+          <a href="book.html?id=OL0003W">
+            <div class="cover cover-3" aria-hidden="true"><span>Jane Eyre</span></div>
+            <h3 class="book-title">Jane Eyre</h3>
+            <p class="book-author">Charlotte Brontë</p>
+            <p class="book-year">1847</p>
+          </a>
+        </li>
+        <li class="book-card">
+          <a href="book.html?id=OL0004W">
+            <div class="cover cover-4" aria-hidden="true"><span>Moby-Dick</span></div>
+            <h3 class="book-title">Moby-Dick</h3>
+            <p class="book-author">Herman Melville</p>
+            <p class="book-year">1851</p>
+          </a>
+        </li>
+        <li class="book-card">
+          <a href="book.html?id=OL0005W">
+            <div class="cover cover-5" aria-hidden="true"><span>Little Women</span></div>
+            <h3 class="book-title">Little Women</h3>
+            <p class="book-author">Louisa May Alcott</p>
+            <p class="book-year">1868</p>
+          </a>
+        </li>
+        <li class="book-card">
+          <a href="book.html?id=OL0006W">
+            <div class="cover cover-6" aria-hidden="true"><span>The Time Machine</span></div>
+            <h3 class="book-title">The Time Machine</h3>
+            <p class="book-author">H. G. Wells</p>
+            <p class="book-year">1895</p>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Shelfwise · Sam Smoot &amp; Michelle Olsen · WDD 231</p>
+      <p>Book data from <a href="https://openlibrary.org">Open Library</a></p>
+    </div>
+  </footer>
+</body>
+</html>

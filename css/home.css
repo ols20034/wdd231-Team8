@@ -1,0 +1,115 @@
+/* Home / search page */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  padding-block: var(--space-xl);
+  text-align: center;
+}
+
+.hero-sub {
+  margin: 0 0 var(--space-lg);
+  opacity: 0.9;
+}
+
+.search-form {
+  display: grid;
+  gap: var(--space-md);
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: left;
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-md);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+}
+
+.search-form .btn {
+  align-self: end;
+}
+
+.results {
+  padding-top: var(--space-lg);
+}
+
+.results-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.results-header h2 {
+  margin: 0;
+}
+
+/* Mobile first: 2 columns, more on bigger screens */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.book-card a {
+  display: block;
+  height: 100%;
+  padding: var(--space-sm);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* CSS animation: cards lift on hover / keyboard focus */
+.book-card a:hover,
+.book-card a:focus-visible {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* CSS animation: cards fade in one after another */
+.book-card {
+  animation: fade-up 0.5s ease-out both;
+}
+
+.book-card:nth-child(2) { animation-delay: 0.08s; }
+.book-card:nth-child(3) { animation-delay: 0.16s; }
+.book-card:nth-child(4) { animation-delay: 0.24s; }
+.book-card:nth-child(5) { animation-delay: 0.32s; }
+.book-card:nth-child(6) { animation-delay: 0.40s; }
+
+.book-card .cover {
+  margin-bottom: var(--space-sm);
+}
+
+.book-title {
+  margin: 0;
+}
+
+.book-author,
+.book-year {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+@media (min-width: 640px) {
+  .search-form {
+    grid-template-columns: 1fr auto auto;
+    align-items: end;
+  }
+
+  .book-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 960px) {
+  .book-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}

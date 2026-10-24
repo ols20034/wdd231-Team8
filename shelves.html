@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your Shelfwise shelves: books you want to read, are reading, and have finished.">
+  <title>My Shelves | Shelfwise</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shelves.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <span class="logo-mark" aria-hidden="true">📚</span>
+        <span class="logo-text">Shelfwise</span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html">Search</a></li>
+          <li><a href="shelves.html" aria-current="page">My Shelves</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <div class="shelves-header">
+      <h1>My Shelves</h1>
+      <!-- JS: filter the list when this changes; could also read ?shelf=finished from the URL -->
+      <div class="field field-inline">
+        <label for="shelf-filter">Show</label>
+        <select id="shelf-filter" name="shelf">
+          <option value="all">All books</option>
+          <option value="to-read">Want to Read</option>
+          <option value="reading">Currently Reading</option>
+          <option value="finished">Finished</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- JS: calculate these counts from localStorage -->
+    <ul class="shelf-stats" aria-label="Shelf totals">
+      <li><span class="stat-num">2</span> Want to Read</li>
+      <li><span class="stat-num">1</span> Reading</li>
+      <li><span class="stat-num">2</span> Finished</li>
+    </ul>
+
+    <!-- JS: build these cards from saved books in localStorage (storage.js + ui.js) -->
+    <ul class="shelf-list">
+      <li class="shelf-item">
+        <div class="cover cover-1 cover-small" aria-hidden="true"><span>Pride and Prejudice</span></div>
+        <div class="shelf-item-info">
+          <h2 class="book-title"><a href="book.html?id=OL0001W">Pride and Prejudice</a></h2>
+          <p class="book-author">Jane Austen</p>
+          <p><span class="badge badge-finished">Finished</span> <span class="rating" aria-label="Rated 5 out of 5">★★★★★</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" aria-label="Remove Pride and Prejudice from shelf">Remove</button>
+      </li>
+      <li class="shelf-item">
+        <div class="cover cover-3 cover-small" aria-hidden="true"><span>Jane Eyre</span></div>
+        <div class="shelf-item-info">
+          <h2 class="book-title"><a href="book.html?id=OL0003W">Jane Eyre</a></h2>
+          <p class="book-author">Charlotte Brontë</p>
+          <p><span class="badge badge-reading">Reading</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" aria-label="Remove Jane Eyre from shelf">Remove</button>
+      </li>
+      <li class="shelf-item">
+        <div class="cover cover-2 cover-small" aria-hidden="true"><span>Frankenstein</span></div>
+        <div class="shelf-item-info">
+          <h2 class="book-title"><a href="book.html?id=OL0002W">Frankenstein</a></h2>
+          <p class="book-author">Mary Shelley</p>
+          <p><span class="badge badge-finished">Finished</span> <span class="rating" aria-label="Rated 4 out of 5">★★★★☆</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" aria-label="Remove Frankenstein from shelf">Remove</button>
+      </li>
+      <li class="shelf-item">
+        <div class="cover cover-4 cover-small" aria-hidden="true"><span>Moby-Dick</span></div>
+        <div class="shelf-item-info">
+          <h2 class="book-title"><a href="book.html?id=OL0004W">Moby-Dick</a></h2>
+          <p class="book-author">Herman Melville</p>
+          <p><span class="badge badge-to-read">Want to Read</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" aria-label="Remove Moby-Dick from shelf">Remove</button>
+      </li>
+      <li class="shelf-item">
+        <div class="cover cover-6 cover-small" aria-hidden="true"><span>The Time Machine</span></div>
+        <div class="shelf-item-info">
+          <h2 class="book-title"><a href="book.html?id=OL0006W">The Time Machine</a></h2>
+          <p class="book-author">H. G. Wells</p>
+          <p><span class="badge badge-to-read">Want to Read</span></p>
+        </div>
+        <button type="button" class="btn btn-ghost" aria-label="Remove The Time Machine from shelf">Remove</button>
+      </li>
+    </ul>
+
+    <!-- JS: show this instead of the list when the shelf is empty -->
+    <div class="empty-state" hidden>
+      <p>No books here yet.</p>
+      <a class="btn btn-primary" href="index.html">Find a book</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Shelfwise · Sam Smoot &amp; Michelle Olsen · WDD 231</p>
+      <p>Book data from <a href="https://openlibrary.org">Open Library</a></p>
+    </div>
+  </footer>
+</body>
+</html>

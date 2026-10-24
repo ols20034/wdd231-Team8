@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Book details and add-to-shelf form on Shelfwise.">
+  <!-- JS: update the title with the book's name once it loads -->
+  <title>Pride and Prejudice | Shelfwise</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/book.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html">
+        <span class="logo-mark" aria-hidden="true">📚</span>
+        <span class="logo-text">Shelfwise</span>
+      </a>
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html">Search</a></li>
+          <li><a href="shelves.html">My Shelves</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <p class="back-link"><a href="index.html">&larr; Back to search</a></p>
+
+    <!-- JS: read ?id= from the URL (URLSearchParams), fetch that work from Open Library,
+         and fill in everything inside this article -->
+    <article class="book-detail">
+      <div class="cover cover-1 cover-large" aria-hidden="true"><span>Pride and Prejudice</span></div>
+
+      <div class="book-info">
+        <h1>Pride and Prejudice</h1>
+        <p class="book-author">by Jane Austen</p>
+        <dl class="book-meta">
+          <div><dt>First published</dt><dd>1813</dd></div>
+          <div><dt>Pages</dt><dd>279</dd></div>
+          <div><dt>Open Library ID</dt><dd>OL0001W</dd></div>
+        </dl>
+        <p class="book-description">
+          Elizabeth Bennet meets the proud Mr. Darcy and quickly decides she dislikes him.
+          As their paths keep crossing, both have to rethink their first impressions.
+          <!-- JS: description comes from the API -->
+        </p>
+        <ul class="tag-list" aria-label="Subjects">
+          <li>Classics</li>
+          <li>Romance</li>
+          <li>England</li>
+        </ul>
+      </div>
+    </article>
+
+    <section class="shelf-form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading">Add to my shelf</h2>
+      <p class="form-intro">Fields marked <span class="req" aria-hidden="true">*</span> are required.</p>
+
+      <!-- JS: validate on submit, save to localStorage (storage.js), then show the confirmation -->
+      <form id="shelf-form" class="shelf-form" novalidate>
+        <input type="hidden" name="bookId" value="OL0001W">
+
+        <div class="field">
+          <label for="shelf">Shelf <span class="req" aria-hidden="true">*</span></label>
+          <select id="shelf" name="shelf" required aria-describedby="shelf-error">
+            <option value="">Choose a shelf…</option>
+            <option value="to-read">Want to Read</option>
+            <option value="reading">Currently Reading</option>
+            <option value="finished">Finished</option>
+          </select>
+          <p class="error-msg" id="shelf-error" aria-live="polite"></p>
+        </div>
+
+        <fieldset class="field rating-field">
+          <legend>Your rating</legend>
+          <div class="rating-options">
+            <input type="radio" id="rate-1" name="rating" value="1"><label for="rate-1">1</label>
+            <input type="radio" id="rate-2" name="rating" value="2"><label for="rate-2">2</label>
+            <input type="radio" id="rate-3" name="rating" value="3"><label for="rate-3">3</label>
+            <input type="radio" id="rate-4" name="rating" value="4"><label for="rate-4">4</label>
+            <input type="radio" id="rate-5" name="rating" value="5"><label for="rate-5">5</label>
+          </div>
+          <p class="hint">1 = didn't like it, 5 = loved it</p>
+        </fieldset>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="date-started">Date started</label>
+            <input type="date" id="date-started" name="dateStarted">
+          </div>
+          <div class="field">
+            <label for="date-finished">Date finished</label>
+            <input type="date" id="date-finished" name="dateFinished" aria-describedby="finished-error">
+            <!-- JS: check that the finish date isn't before the start date -->
+            <p class="error-msg" id="finished-error" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes" rows="4" maxlength="500" aria-describedby="notes-hint"></textarea>
+          <p class="hint" id="notes-hint">Up to 500 characters.</p>
+        </div>
+
+        <div class="field checkbox-field">
+          <input type="checkbox" id="favorite" name="favorite">
+          <label for="favorite">Mark as a favorite</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save to shelf</button>
+
+        <!-- JS: unhide this after a successful save -->
+        <p class="success-msg" role="status" hidden>Saved! <a href="shelves.html">View my shelves</a></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Shelfwise · Sam Smoot &amp; Michelle Olsen · WDD 231</p>
+      <p>Book data from <a href="https://openlibrary.org">Open Library</a></p>
+    </div>
+  </footer>
+</body>
+</html>

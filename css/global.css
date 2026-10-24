@@ -1,0 +1,235 @@
+/* Global styles: resets, typography, layout helpers, buttons, form fields, covers */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  line-height: 1.2;
+  margin: 0 0 var(--space-sm);
+}
+
+h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+h2 { font-size: clamp(1.35rem, 3vw, 1.75rem); }
+h3 { font-size: 1.1rem; }
+
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.container {
+  width: min(100% - 2rem, var(--max-width));
+  margin-inline: auto;
+}
+
+/* Keyboard focus: always visible */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Skip link: hidden until focused */
+.skip-link {
+  position: absolute;
+  left: var(--space-md);
+  top: -100px;
+  background: var(--color-primary);
+  color: #fff;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: var(--space-md);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  color: #fff;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--color-primary);
+}
+
+/* Form fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field label,
+.field legend {
+  font-weight: 600;
+}
+
+.field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+input[type="search"],
+input[type="text"],
+input[type="date"],
+select,
+textarea {
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+}
+
+/* Styles for invalid fields once the user has interacted (JS adds .touched) */
+.touched:invalid,
+.is-invalid {
+  border-color: var(--color-error);
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.error-msg {
+  font-size: 0.875rem;
+  color: var(--color-error);
+  margin: 0;
+  min-height: 1.25rem;
+}
+
+.req {
+  color: var(--color-error);
+}
+
+/* Placeholder book covers (JS will swap these for real cover images) */
+.cover {
+  aspect-ratio: 2 / 3;
+  border-radius: 4px 8px 8px 4px;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-md);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  box-shadow: inset 6px 0 0 rgb(0 0 0 / 0.18);
+}
+
+.cover-1 { background: linear-gradient(160deg, #7a2e2e, #4a1a1a); }
+.cover-2 { background: linear-gradient(160deg, #2f4b3a, #1b2c22); }
+.cover-3 { background: linear-gradient(160deg, #3b4a6b, #222c42); }
+.cover-4 { background: linear-gradient(160deg, #1f5468, #10303c); }
+.cover-5 { background: linear-gradient(160deg, #8a5a2b, #5a3a1a); }
+.cover-6 { background: linear-gradient(160deg, #4b3b5c, #2b2136); }
+
+/* Shelf badges */
+.badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+
+.badge-to-read { background: var(--badge-to-read); color: var(--badge-to-read-text); }
+.badge-reading { background: var(--badge-reading); color: var(--badge-reading-text); }
+.badge-finished { background: var(--badge-finished); color: var(--badge-finished-text); }
+
+/* CSS animation: content fades and slides up when the page loads */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up 0.5s ease-out both;
+}
+
+/* Respect users who turn off motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

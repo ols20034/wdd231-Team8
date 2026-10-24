@@ -1,0 +1,29 @@
+/* Footer (shared on every page) */
+.site-footer {
+  margin-top: var(--space-xl);
+  background: var(--color-text);
+  color: #f1ebe2;
+  font-size: 0.9rem;
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding-block: var(--space-lg);
+}
+
+.footer-inner p {
+  margin: 0;
+}
+
+.site-footer a {
+  color: var(--color-accent);
+}
+
+@media (min-width: 640px) {
+  .footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

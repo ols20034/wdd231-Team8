@@ -1,0 +1,173 @@
+/* Book detail page */
+.back-link {
+  margin-block: var(--space-md);
+}
+
+.book-detail {
+  display: grid;
+  gap: var(--space-lg);
+  background: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: fade-up 0.5s ease-out both;
+}
+
+.cover-large {
+  width: min(220px, 60%);
+  font-size: 1.4rem;
+  margin-inline: auto;
+}
+
+.book-info .book-author {
+  font-size: 1.1rem;
+  color: var(--color-muted);
+  margin: 0 0 var(--space-md);
+}
+
+.book-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-lg);
+  margin: 0 0 var(--space-md);
+}
+
+.book-meta dt {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.book-meta dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.tag-list li {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 0.15rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* Add-to-shelf form */
+.shelf-form-section {
+  margin-top: var(--space-lg);
+  background: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  animation: fade-up 0.5s ease-out 0.15s both;
+}
+
+.form-intro {
+  margin-top: 0;
+  color: var(--color-muted);
+}
+
+.shelf-form {
+  display: grid;
+  gap: var(--space-md);
+  max-width: 560px;
+}
+
+.field-row {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.rating-field {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rating-options {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* Visually hide the radio but keep it accessible and focusable */
+.rating-options input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.rating-options label {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.rating-options label:hover {
+  border-color: var(--color-accent);
+  transform: scale(1.08);
+}
+
+.rating-options input:checked + label {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.rating-options input:focus-visible + label {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.checkbox-field {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.checkbox-field input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--color-primary);
+}
+
+.shelf-form .btn {
+  justify-self: start;
+}
+
+.success-msg {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--badge-finished);
+  color: var(--color-success);
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+@media (min-width: 640px) {
+  .field-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .book-detail {
+    grid-template-columns: 220px 1fr;
+  }
+
+  .cover-large {
+    width: 100%;
+  }
+}

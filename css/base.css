@@ -1,0 +1,5 @@
+/* Shared styles for every page. Each page also links its own page CSS file. */
+@import 'variables.css';
+@import 'global.css';
+@import 'header.css';
+@import 'footer.css';
