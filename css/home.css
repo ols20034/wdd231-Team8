@@ -71,16 +71,11 @@
   box-shadow: var(--shadow-hover);
 }
 
-/* CSS animation: cards fade in one after another */
+/* CSS animation: cards fade in one after another.
+   ui.js sets --delay on each card (0ms, 60ms, 120ms...) */
 .book-card {
-  animation: fade-up 0.5s ease-out both;
+  animation: fade-up 0.5s ease-out var(--delay, 0s) both;
 }
-
-.book-card:nth-child(2) { animation-delay: 0.08s; }
-.book-card:nth-child(3) { animation-delay: 0.16s; }
-.book-card:nth-child(4) { animation-delay: 0.24s; }
-.book-card:nth-child(5) { animation-delay: 0.32s; }
-.book-card:nth-child(6) { animation-delay: 0.40s; }
 
 .book-card .cover {
   margin-bottom: var(--space-sm);

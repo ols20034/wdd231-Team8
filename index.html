@@ -7,10 +7,9 @@
   <title>Shelfwise | Find Your Next Book</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/home.css">
-  <!-- JS: modules get wired up after the checkpoint -->
   <script type="module" src="js/main.js"></script>
 </head>
-<body>
+<body data-page="home">
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
@@ -19,8 +18,12 @@
         <span class="logo-mark" aria-hidden="true">📚</span>
         <span class="logo-text">Shelfwise</span>
       </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
       <nav aria-label="Main">
-        <ul class="nav-list">
+        <ul class="nav-list" id="main-nav">
           <li><a href="index.html" aria-current="page">Search</a></li>
           <li><a href="shelves.html">My Shelves</a></li>
         </ul>
@@ -34,7 +37,7 @@
         <h1>Find your next favorite book</h1>
         <p class="hero-sub">Search millions of titles, then save them to your shelves.</p>
 
-        <!-- JS: on submit, read these values and call the Open Library search API -->
+        <!-- method="get" puts the search in the URL (?q=...&type=...); main.js reads it back -->
         <form class="search-form" action="index.html" method="get" role="search">
           <div class="field search-field">
             <label for="search-query">Search for a book</label>
@@ -55,7 +58,7 @@
 
     <section class="results container" aria-labelledby="results-heading">
       <div class="results-header">
-        <h2 id="results-heading">Popular right now</h2>
+        <h2 id="results-heading">Popular classics</h2>
         <div class="field field-inline">
           <label for="sort-results">Sort</label>
           <select id="sort-results" name="sort">
@@ -67,58 +70,11 @@
         </div>
       </div>
 
-      <!-- JS: replace these hard-coded cards with cards built from the API results (ui.js) -->
-      <!-- The ?id= values are placeholders. Replace them with real Open Library work keys. -->
-      <ul class="book-grid">
-        <li class="book-card">
-          <a href="book.html?id=OL0001W">
-            <div class="cover cover-1" aria-hidden="true"><span>Pride and Prejudice</span></div>
-            <h3 class="book-title">Pride and Prejudice</h3>
-            <p class="book-author">Jane Austen</p>
-            <p class="book-year">1813</p>
-          </a>
-        </li>
-        <li class="book-card">
-          <a href="book.html?id=OL0002W">
-            <div class="cover cover-2" aria-hidden="true"><span>Frankenstein</span></div>
-            <h3 class="book-title">Frankenstein</h3>
-            <p class="book-author">Mary Shelley</p>
-            <p class="book-year">1818</p>
-          </a>
-        </li>
-        <li class="book-card">
-          <a href="book.html?id=OL0003W">
-            <div class="cover cover-3" aria-hidden="true"><span>Jane Eyre</span></div>
-            <h3 class="book-title">Jane Eyre</h3>
-            <p class="book-author">Charlotte Brontë</p>
-            <p class="book-year">1847</p>
-          </a>
-        </li>
-        <li class="book-card">
-          <a href="book.html?id=OL0004W">
-            <div class="cover cover-4" aria-hidden="true"><span>Moby-Dick</span></div>
-            <h3 class="book-title">Moby-Dick</h3>
-            <p class="book-author">Herman Melville</p>
-            <p class="book-year">1851</p>
-          </a>
-        </li>
-        <li class="book-card">
-          <a href="book.html?id=OL0005W">
-            <div class="cover cover-5" aria-hidden="true"><span>Little Women</span></div>
-            <h3 class="book-title">Little Women</h3>
-            <p class="book-author">Louisa May Alcott</p>
-            <p class="book-year">1868</p>
-          </a>
-        </li>
-        <li class="book-card">
-          <a href="book.html?id=OL0006W">
-            <div class="cover cover-6" aria-hidden="true"><span>The Time Machine</span></div>
-            <h3 class="book-title">The Time Machine</h3>
-            <p class="book-author">H. G. Wells</p>
-            <p class="book-year">1895</p>
-          </a>
-        </li>
+      <!-- Cards are built by ui.js from Open Library search results -->
+      <ul class="book-grid" aria-describedby="results-status">
+        <li class="message message-loading"><span class="spinner" aria-hidden="true"></span>Loading books…</li>
       </ul>
+      <p id="results-status" class="visually-hidden" role="status"></p>
     </section>
   </main>
 
