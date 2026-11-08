@@ -4,13 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Book details and add-to-shelf form on Shelfwise.">
-  <!-- JS: update the title with the book's name once it loads -->
-  <title>Pride and Prejudice | Shelfwise</title>
+  <title>Book Details | Shelfwise</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/book.css">
   <script type="module" src="js/main.js"></script>
 </head>
-<body>
+<body data-page="book">
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header">
@@ -19,8 +18,12 @@
         <span class="logo-mark" aria-hidden="true">📚</span>
         <span class="logo-text">Shelfwise</span>
       </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav">
+        <span class="nav-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
       <nav aria-label="Main">
-        <ul class="nav-list">
+        <ul class="nav-list" id="main-nav">
           <li><a href="index.html">Search</a></li>
           <li><a href="shelves.html">My Shelves</a></li>
         </ul>
@@ -31,39 +34,19 @@
   <main id="main" class="container">
     <p class="back-link"><a href="index.html">&larr; Back to search</a></p>
 
-    <!-- JS: read ?id= from the URL (URLSearchParams), fetch that work from Open Library,
-         and fill in everything inside this article -->
-    <article class="book-detail">
-      <div class="cover cover-1 cover-large" aria-hidden="true"><span>Pride and Prejudice</span></div>
-
-      <div class="book-info">
-        <h1>Pride and Prejudice</h1>
-        <p class="book-author">by Jane Austen</p>
-        <dl class="book-meta">
-          <div><dt>First published</dt><dd>1813</dd></div>
-          <div><dt>Pages</dt><dd>279</dd></div>
-          <div><dt>Open Library ID</dt><dd>OL0001W</dd></div>
-        </dl>
-        <p class="book-description">
-          Elizabeth Bennet meets the proud Mr. Darcy and quickly decides she dislikes him.
-          As their paths keep crossing, both have to rethink their first impressions.
-          <!-- JS: description comes from the API -->
-        </p>
-        <ul class="tag-list" aria-label="Subjects">
-          <li>Classics</li>
-          <li>Romance</li>
-          <li>England</li>
-        </ul>
-      </div>
+    <!-- main.js reads ?id= from the URL, fetches that work from Open Library,
+         and ui.js fills in this article -->
+    <article class="book-detail" aria-live="polite">
+      <p class="message message-loading"><span class="spinner" aria-hidden="true"></span>Loading book…</p>
     </article>
 
-    <section class="shelf-form-section" aria-labelledby="form-heading">
+    <section class="shelf-form-section" aria-labelledby="form-heading" hidden>
       <h2 id="form-heading">Add to my shelf</h2>
       <p class="form-intro">Fields marked <span class="req" aria-hidden="true">*</span> are required.</p>
 
-      <!-- JS: validate on submit, save to localStorage (storage.js), then show the confirmation -->
+      <!-- form.js validates on submit, storage.js saves to localStorage -->
       <form id="shelf-form" class="shelf-form" novalidate>
-        <input type="hidden" name="bookId" value="OL0001W">
+        <input type="hidden" name="bookId" value="">
 
         <div class="field">
           <label for="shelf">Shelf <span class="req" aria-hidden="true">*</span></label>
@@ -91,20 +74,21 @@
         <div class="field-row">
           <div class="field">
             <label for="date-started">Date started</label>
-            <input type="date" id="date-started" name="dateStarted">
+            <input type="date" id="date-started" name="dateStarted" aria-describedby="started-error">
+            <p class="error-msg" id="started-error" aria-live="polite"></p>
           </div>
           <div class="field">
             <label for="date-finished">Date finished</label>
             <input type="date" id="date-finished" name="dateFinished" aria-describedby="finished-error">
-            <!-- JS: check that the finish date isn't before the start date -->
             <p class="error-msg" id="finished-error" aria-live="polite"></p>
           </div>
         </div>
 
         <div class="field">
           <label for="notes">Notes</label>
-          <textarea id="notes" name="notes" rows="4" maxlength="500" aria-describedby="notes-hint"></textarea>
-          <p class="hint" id="notes-hint">Up to 500 characters.</p>
+          <textarea id="notes" name="notes" rows="4" maxlength="500" aria-describedby="notes-error notes-count"></textarea>
+          <p class="hint" id="notes-count">0 / 500 characters</p>
+          <p class="error-msg" id="notes-error" aria-live="polite"></p>
         </div>
 
         <div class="field checkbox-field">
@@ -114,8 +98,7 @@
 
         <button type="submit" class="btn btn-primary">Save to shelf</button>
 
-        <!-- JS: unhide this after a successful save -->
-        <p class="success-msg" role="status" hidden>Saved! <a href="shelves.html">View my shelves</a></p>
+        <p class="success-msg" role="status" hidden></p>
       </form>
     </section>
   </main>
