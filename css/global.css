@@ -300,4 +300,7 @@ textarea:focus {
 .favorite {
   color: var(--color-primary);
   margin-left: var(--space-xs);
+
+
 }
+
