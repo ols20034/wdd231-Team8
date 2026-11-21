@@ -41,7 +41,8 @@
         <form class="search-form" action="index.html" method="get" role="search">
           <div class="field search-field">
             <label for="search-query">Search for a book</label>
-            <input type="search" id="search-query" name="q" placeholder="e.g. Pride and Prejudice" required minlength="2">
+            <input type="search" id="search-query" name="q" placeholder="e.g. Pride and Prejudice" minlength="2" aria-describedby="search-hint">
+            <p class="hint" id="search-hint">Leave blank to browse popular classics.</p>
           </div>
           <div class="field">
             <label for="search-type">Search by</label>
@@ -51,7 +52,10 @@
               <option value="subject">Subject</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary">Search</button>
+          <div class="search-actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="button" class="btn btn-ghost search-clear" hidden>Clear</button>
+          </div>
         </form>
       </div>
     </section>

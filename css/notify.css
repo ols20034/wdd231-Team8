@@ -1,0 +1,165 @@
+/* Save confirmations (notify.js)
+   Wide screens: a toast in the top-right corner.
+   Small screens: a dialog in the center with a View Shelf button.
+   Both close on their own after a few seconds; the gold bar shows the time left. */
+
+/* ---------- Toast (top right) ---------- */
+.toast-region {
+  position: fixed;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 200;
+  display: grid;
+  gap: var(--space-sm);
+  width: min(360px, calc(100vw - 2rem));
+}
+
+.toast {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-xs) var(--space-md);
+  align-items: start;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border-left: 5px solid var(--color-success);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-hover);
+  animation: toast-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.toast.is-leaving {
+  animation: toast-out 0.25s ease-in forwards;
+}
+
+.toast-body p {
+  margin: 0;
+}
+
+.toast-title {
+  font-weight: 700;
+}
+
+.toast-close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.toast-close:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Hovering or tabbing into the toast pauses the countdown */
+.toast:hover .notify-timer,
+.toast:focus-within .notify-timer {
+  animation-play-state: paused;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(110%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toast-out {
+  to { opacity: 0; transform: translateX(110%); }
+}
+
+/* ---------- Dialog (center, small screens) ---------- */
+.save-dialog {
+  width: min(90vw, 340px);
+  padding: var(--space-lg);
+  border: none;
+  border-radius: calc(var(--radius) * 1.5);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-align: center;
+  box-shadow: var(--shadow-hover);
+  overflow: hidden;
+}
+
+.save-dialog[open] {
+  animation: dialog-pop 0.3s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+.save-dialog::backdrop {
+  background: rgb(43 36 32 / 0.45);
+}
+
+.save-dialog h2 {
+  margin-bottom: var(--space-xs);
+}
+
+.save-dialog p {
+  margin: 0 0 var(--space-lg);
+  color: var(--color-muted);
+}
+
+.save-dialog-actions {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.save-dialog-actions .btn {
+  width: 100%;
+  text-align: center;
+}
+
+/* Once the user touches the dialog, stop the auto-close */
+.save-dialog.is-held .notify-timer {
+  visibility: hidden;
+  animation: none;
+}
+
+@keyframes dialog-pop {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- Shared pieces ---------- */
+.notify-icon {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  color: #fff;
+  font-weight: 700;
+}
+
+.save-dialog .notify-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto var(--space-md);
+  font-size: 1.75rem;
+  animation: dialog-pop 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.4) 0.1s both;
+}
+
+/* CSS animation: the gold bar shrinks while the message counts down */
+.notify-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--color-accent);
+  transform-origin: left;
+  animation: notify-countdown var(--notify-duration, 5s) linear forwards;
+}
+
+@keyframes notify-countdown {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}

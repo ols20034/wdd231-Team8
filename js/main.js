@@ -17,12 +17,14 @@ import { searchBooks, getPopularBooks, getBook } from './api.js';
 import {
   getShelf, getSavedBook, saveBook, removeBook,
   getSortPreference, setSortPreference, SHELF_NAMES,
+  getLastSearch, setLastSearch, clearLastSearch,
 } from './storage.js';
 import {
   renderBookCards, renderBookDetail, renderShelfList, renderStats, showMessage,
 } from './ui.js';
 import { validateForm, liveValidate, readForm, fillForm } from './form.js';
 import { setupNav } from './nav.js';
+import { showSaved } from './notify.js';
 
 setupNav();
 
@@ -40,14 +42,35 @@ async function initHome() {
   const queryInput = document.getElementById('search-query');
   const typeSelect = document.getElementById('search-type');
 
+  const clearButton = document.querySelector('.search-clear');
+
   // The search form submits with method="get", so the search ends up in the URL:
   // index.html?q=dune&type=title. Reading it back here means results can be bookmarked
   // and the Back button works.
   const params = new URLSearchParams(window.location.search);
-  const query = (params.get('q') || '').trim();
-  const type = params.get('type') || 'title';
+  let query;
+  let type;
+  if (params.has('q')) {
+    // A search was just submitted. A blank search means "show me everything" (popular books).
+    query = params.get('q').trim();
+    type = params.get('type') || 'title';
+    if (query) setLastSearch(query, type);
+    else clearLastSearch();
+  } else {
+    // Came back to Search from another page: bring back the last search, if there was one.
+    const last = getLastSearch();
+    query = last ? last.query : '';
+    type = last ? last.type : 'title';
+    if (query) {
+      const url = new URL(window.location);
+      url.searchParams.set('q', query);
+      url.searchParams.set('type', type);
+      history.replaceState(null, '', url);
+    }
+  }
+  if (!['title', 'author', 'subject'].includes(type)) type = 'title';
   queryInput.value = query;
-  if (['title', 'author', 'subject'].includes(type)) typeSelect.value = type;
+  typeSelect.value = type;
 
   sortSelect.value = getSortPreference();
   let books = [];
@@ -59,23 +82,46 @@ async function initHome() {
     if (books.length) draw();
   });
 
-  heading.textContent = query ? `Results for "${query}"` : 'Popular classics';
-  showMessage(grid, 'Loading books…', 'loading');
+  // Clear shows only while there's something to clear
+  const updateClearButton = () => {
+    clearButton.hidden = !queryInput.value.trim() && !query;
+  };
+  queryInput.addEventListener('input', updateClearButton);
 
-  try {
-    books = query ? await searchBooks(query, type) : await getPopularBooks();
-    if (books.length === 0) {
-      showMessage(grid, `No books found for "${query}". Try a different spelling or search by author.`);
-      status.textContent = 'No results found.';
-      return;
+  // Clear resets the search box, forgets the saved search, and goes back to popular books
+  clearButton.addEventListener('click', () => {
+    clearLastSearch();
+    query = '';
+    queryInput.value = '';
+    typeSelect.value = 'title';
+    history.replaceState(null, '', window.location.pathname);
+    updateClearButton();
+    queryInput.focus();
+    loadResults('', 'title');
+  });
+
+  async function loadResults(searchQuery, searchType) {
+    heading.textContent = searchQuery ? `Results for "${searchQuery}"` : 'Popular classics';
+    showMessage(grid, 'Loading books…', 'loading');
+    books = [];
+    try {
+      books = searchQuery ? await searchBooks(searchQuery, searchType) : await getPopularBooks();
+      if (books.length === 0) {
+        showMessage(grid, `No books found for "${searchQuery}". Try a different spelling or search by author.`);
+        status.textContent = 'No results found.';
+        return;
+      }
+      draw();
+      status.textContent = `${books.length} books loaded.`;
+    } catch (error) {
+      console.error(error);
+      showMessage(grid, "Couldn't reach Open Library. Check your connection and try again.", 'error');
+      status.textContent = 'Error loading books.';
     }
-    draw();
-    status.textContent = `${books.length} books loaded.`;
-  } catch (error) {
-    console.error(error);
-    showMessage(grid, "Couldn't reach Open Library. Check your connection and try again.", 'error');
-    status.textContent = 'Error loading books.';
   }
+
+  updateClearButton();
+  loadResults(query, type);
 }
 
 function sortBooks(books, sortBy) {
@@ -92,7 +138,6 @@ async function initBook() {
   const article = document.querySelector('.book-detail');
   const formSection = document.querySelector('.shelf-form-section');
   const form = document.getElementById('shelf-form');
-  const success = form.querySelector('.success-msg');
 
   // URL parameter: book.html?id=OL45804W
   const id = new URLSearchParams(window.location.search).get('id');
@@ -128,15 +173,19 @@ async function initBook() {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     form.dataset.submitted = 'true';
-    success.hidden = true;
     if (!validateForm(form)) return;
 
+    const isUpdate = Boolean(getSavedBook(book.id));
     const entry = { id: book.id, title: book.title, author: book.author, coverId: book.coverId, ...readForm(form) };
     saveBook(entry);
 
-    // Link straight to the shelf it was saved on (another URL parameter)
-    success.innerHTML = `Saved to ${SHELF_NAMES[entry.shelf]}! <a href="shelves.html?shelf=${entry.shelf}">View that shelf</a>`;
-    success.hidden = false;
+    // Toast (wide screens) or dialog (phones) with a link straight to that shelf (URL parameter)
+    showSaved({
+      title: isUpdate ? 'Shelf updated' : 'Saved!',
+      message: `"${book.title}" is on your ${SHELF_NAMES[entry.shelf]} shelf.`,
+      linkHref: `shelves.html?shelf=${entry.shelf}`,
+      linkText: `View ${SHELF_NAMES[entry.shelf]} shelf`,
+    });
     form.querySelector('button[type="submit"]').textContent = 'Update shelf';
     document.getElementById('form-heading').textContent = `On your ${SHELF_NAMES[entry.shelf]} shelf`;
   });

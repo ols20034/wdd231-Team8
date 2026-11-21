@@ -7,6 +7,7 @@
   <title>Book Details | Shelfwise</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/book.css">
+  <link rel="stylesheet" href="css/notify.css">
   <script type="module" src="js/main.js"></script>
 </head>
 <body data-page="book">
@@ -59,7 +60,8 @@
           <p class="error-msg" id="shelf-error" aria-live="polite"></p>
         </div>
 
-        <fieldset class="field rating-field">
+        <!-- form.js shows or hides the rating and date fields based on the shelf chosen above -->
+        <fieldset class="field rating-field" data-shelf-field hidden>
           <legend>Your rating</legend>
           <div class="rating-options">
             <input type="radio" id="rate-1" name="rating" value="1"><label for="rate-1">1</label>
@@ -72,12 +74,13 @@
         </fieldset>
 
         <div class="field-row">
-          <div class="field">
+          <div class="field" id="started-field" data-shelf-field hidden>
             <label for="date-started">Date started</label>
-            <input type="date" id="date-started" name="dateStarted" aria-describedby="started-error">
+            <input type="date" id="date-started" name="dateStarted" aria-describedby="started-error started-hint">
+            <p class="hint" id="started-hint"></p>
             <p class="error-msg" id="started-error" aria-live="polite"></p>
           </div>
-          <div class="field">
+          <div class="field" id="finished-field" data-shelf-field hidden>
             <label for="date-finished">Date finished</label>
             <input type="date" id="date-finished" name="dateFinished" aria-describedby="finished-error">
             <p class="error-msg" id="finished-error" aria-live="polite"></p>
@@ -97,8 +100,6 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save to shelf</button>
-
-        <p class="success-msg" role="status" hidden></p>
       </form>
     </section>
   </main>

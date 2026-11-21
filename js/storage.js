@@ -64,3 +64,23 @@ export function getSortPreference() {
 export function setSortPreference(value) {
   localStorage.setItem(SORT_KEY, value);
 }
+
+// Remember the last search for this browser tab (sessionStorage), so coming back
+// from a book page or the My Shelves page brings the same results back.
+const SEARCH_KEY = 'shelfwise-last-search';
+
+export function getLastSearch() {
+  try {
+    return JSON.parse(sessionStorage.getItem(SEARCH_KEY));
+  } catch {
+    return null;
+  }
+}
+
+export function setLastSearch(query, type) {
+  sessionStorage.setItem(SEARCH_KEY, JSON.stringify({ query, type }));
+}
+
+export function clearLastSearch() {
+  sessionStorage.removeItem(SEARCH_KEY);
+}

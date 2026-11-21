@@ -151,13 +151,9 @@
   justify-self: start;
 }
 
-.success-msg {
-  margin: 0;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--badge-finished);
-  color: var(--color-success);
-  border-radius: var(--radius);
-  font-weight: 600;
+/* CSS animation: fields slide in when the chosen shelf reveals them */
+.shelf-form [data-shelf-field]:not([hidden]) {
+  animation: fade-up 0.3s ease-out both;
 }
 
 @media (min-width: 640px) {

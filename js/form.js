@@ -9,25 +9,40 @@ function today() {
   return now.toISOString().slice(0, 10);
 }
 
+// Which optional fields each shelf uses:
+//   Want to Read      -> planned start date only (it can be in the future)
+//   Currently Reading -> start date only
+//   Finished          -> rating, start date, and finish date
+const SHELF_FIELDS = {
+  '': [],
+  'to-read': ['started'],
+  reading: ['started'],
+  finished: ['rating', 'started', 'finished'],
+};
+
+function uses(form, field) {
+  return (SHELF_FIELDS[form.shelf.value] || []).includes(field);
+}
+
 // Each rule returns an error message, or '' if the field is fine.
 const rules = {
   shelf: (form) => (form.shelf.value ? '' : 'Please choose a shelf.'),
 
   dateStarted: (form) => {
     const started = form.dateStarted.value;
-    if (started && started > today()) return "Start date can't be in the future.";
+    if (!uses(form, 'started') || !started) return '';
+    // Want to Read can be planned ahead; the other shelves mean you've already started
+    if (form.shelf.value !== 'to-read' && started > today()) return "Start date can't be in the future.";
     return '';
   },
 
   dateFinished: (form) => {
+    if (!uses(form, 'finished')) return '';
     const started = form.dateStarted.value;
     const finished = form.dateFinished.value;
-    if (!finished) {
-      return form.shelf.value === 'finished' ? 'Add the date you finished the book.' : '';
-    }
+    if (!finished) return 'Add the date you finished the book.';
     if (finished > today()) return "Finish date can't be in the future.";
     if (started && finished < started) return 'Finish date must be on or after the start date.';
-    if (form.shelf.value === 'to-read') return 'Books on "Want to Read" can\'t have a finish date.';
     return '';
   },
 
@@ -54,8 +69,37 @@ export function validateForm(form) {
   return !firstInvalid;
 }
 
+// Show only the fields that make sense for the chosen shelf, and adjust the start-date
+// label and limits (Want to Read can have a planned start date in the future).
+export function updateShelfFields(form) {
+  const shelf = form.shelf.value;
+  document.querySelector('.rating-field').hidden = !uses(form, 'rating');
+  document.getElementById('started-field').hidden = !uses(form, 'started');
+  document.getElementById('finished-field').hidden = !uses(form, 'finished');
+
+  const startedLabel = form.querySelector('label[for="date-started"]');
+  const startedHint = document.getElementById('started-hint');
+  if (shelf === 'to-read') {
+    startedLabel.textContent = 'Planned start date';
+    startedHint.textContent = 'Optional. Pick a future date if you plan to start later.';
+    form.dateStarted.removeAttribute('max');
+  } else {
+    startedLabel.textContent = 'Date started';
+    startedHint.textContent = '';
+    form.dateStarted.max = today();
+  }
+  form.dateFinished.max = today();
+
+  // Clear old error messages on fields that are now hidden
+  if (!uses(form, 'started')) showError(form, 'dateStarted', '');
+  if (!uses(form, 'finished')) showError(form, 'dateFinished', '');
+}
+
 // After the first submit attempt, re-check fields as the user fixes them.
 export function liveValidate(form) {
+  form.shelf.addEventListener('change', () => updateShelfFields(form));
+  updateShelfFields(form);
+
   form.addEventListener('change', () => {
     if (!form.dataset.submitted) return;
     for (const [name, rule] of Object.entries(rules)) showError(form, name, rule(form));
@@ -66,19 +110,16 @@ export function liveValidate(form) {
   const update = () => { counter.textContent = `${form.notes.value.length} / 500 characters`; };
   form.notes.addEventListener('input', update);
   update();
-
-  // Date pickers can't go past today
-  form.dateStarted.max = today();
-  form.dateFinished.max = today();
 }
 
-// Read the form into a plain object for storage.js
+// Read the form into a plain object for storage.js.
+// Hidden fields are saved as empty so a Want to Read book never keeps an old rating.
 export function readForm(form) {
   return {
     shelf: form.shelf.value,
-    rating: form.rating.value ? Number(form.rating.value) : null,
-    dateStarted: form.dateStarted.value,
-    dateFinished: form.dateFinished.value,
+    rating: uses(form, 'rating') && form.rating.value ? Number(form.rating.value) : null,
+    dateStarted: uses(form, 'started') ? form.dateStarted.value : '',
+    dateFinished: uses(form, 'finished') ? form.dateFinished.value : '',
     notes: form.notes.value.trim(),
     favorite: form.favorite.checked,
   };
@@ -93,4 +134,5 @@ export function fillForm(form, saved) {
   form.notes.value = saved.notes || '';
   form.favorite.checked = Boolean(saved.favorite);
   form.notes.dispatchEvent(new Event('input'));
+  updateShelfFields(form);
 }
