@@ -52,33 +52,34 @@ export async function searchBooks(query, type = 'title', limit = 12) {
 }
 
 // Books shown on the home page before the user searches.
+// A hand-picked list of Open Library work IDs. All of them are fetched in ONE search
+// request (key:(... OR ...)) instead of one request per title, so the page only waits
+// on a single API call (this keeps Lighthouse performance at 100). Using exact IDs also
+// means no duplicate books and no wrong editions.
+const FEATURED_WORK_IDS = [
+  'OL27482W', // The Hobbit
+  'OL893414W', // Dune
+  'OL3140822W', // To Kill a Mockingbird
+  'OL1168083W', // Nineteen Eighty-Four
+  'OL66554W', // Pride and Prejudice
+  'OL468431W', // The Great Gatsby
+  'OL3335245W', // The Catcher in the Rye
+  'OL27448W', // The Lord of the Rings
+  'OL1095427W', // Jane Eyre
+  'OL103123W', // Fahrenheit 451
+  'OL5819456W', // The Book Thief
+  'OL64365W', // Brave New World
+];
+
 export async function getPopularBooks() {
-  const featuredTitles = [
-    'The Hobbit',
-    'Dune',
-    'To Kill a Mockingbird',
-    '1984',
-    'Pride and Prejudice',
-    'The Great Gatsby',
-    'The Catcher in the Rye',
-    'The Lord of the Rings',
-    'Jane Eyre',
-    'Fahrenheit 451',
-    'The Book Thief',
-    'Brave New World'
-  ];
-
-  const results = await Promise.all(
-    featuredTitles.map(title =>
-      searchBooks(title, 'title', 1)
-    )
-  );
-
-  return results
-    .flat()
-    .filter(book => book);
+  const keys = FEATURED_WORK_IDS.map((id) => `/works/${id}`).join(' OR ');
+  const query = encodeURIComponent(`key:(${keys})`);
+  const url = `${BASE}/search.json?q=${query}&limit=${FEATURED_WORK_IDS.length}&lang=en&fields=${SEARCH_FIELDS}`;
+  const data = await getJson(url);
+  const books = data.docs.map(toBookSummary);
+  // Open Library returns them in its own order; put them back in our list's order.
+  return books.sort((a, b) => FEATURED_WORK_IDS.indexOf(a.id) - FEATURED_WORK_IDS.indexOf(b.id));
 }
-
 
 // Full details for one work, plus its author names (they come from a separate endpoint).
 export async function getBook(workId) {
