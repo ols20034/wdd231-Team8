@@ -52,9 +52,33 @@ export async function searchBooks(query, type = 'title', limit = 12) {
 }
 
 // Books shown on the home page before the user searches.
-export function getPopularBooks() {
-  return searchBooks('classics', 'subject', 12);
+export async function getPopularBooks() {
+  const featuredTitles = [
+    'The Hobbit',
+    'Dune',
+    'To Kill a Mockingbird',
+    '1984',
+    'Pride and Prejudice',
+    'The Great Gatsby',
+    'The Catcher in the Rye',
+    'The Lord of the Rings',
+    'Jane Eyre',
+    'Fahrenheit 451',
+    'The Book Thief',
+    'Brave New World'
+  ];
+
+  const results = await Promise.all(
+    featuredTitles.map(title =>
+      searchBooks(title, 'title', 1)
+    )
+  );
+
+  return results
+    .flat()
+    .filter(book => book);
 }
+
 
 // Full details for one work, plus its author names (they come from a separate endpoint).
 export async function getBook(workId) {

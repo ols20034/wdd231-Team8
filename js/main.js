@@ -101,7 +101,7 @@ async function initHome() {
   });
 
   async function loadResults(searchQuery, searchType) {
-    heading.textContent = searchQuery ? `Results for "${searchQuery}"` : 'Popular classics';
+    heading.textContent = searchQuery ? `Results for "${searchQuery}"` : 'Popular Reads';
     showMessage(grid, 'Loading books…', 'loading');
     books = [];
     try {
