@@ -1,16 +1,4 @@
 // main.js: entry point loaded by every page (type="module").
-// Figures out which page it is on and runs the matching setup code.
-//
-// TODO (after checkpoint):
-// import { searchBooks, getBook } from './api.js';
-// import { getShelf, saveBook, removeBook } from './storage.js';
-// import { renderBookCards, renderBookDetail, renderShelfList } from './ui.js';
-//
-// const page = document.body.dataset.page;  // or check location.pathname
-// if (page === 'home')    { /* listen for search form submit, fetch, render cards */ }
-// if (page === 'book')    { /* read ?id= with URLSearchParams, fetch the book, set up form validation */ }
-// if (page === 'shelves') { /* load saved books from localStorage, render, handle filter and Remove */ }
-// main.js: entry point loaded by every page (type="module").
 // Sets up the menu, then runs the code for whichever page we're on (<body data-page="...">).
 
 import { searchBooks, getPopularBooks, getBook } from './api.js';
@@ -24,6 +12,7 @@ import {
 } from './ui.js';
 import { validateForm, liveValidate, readForm, fillForm } from './form.js';
 import { setupNav } from './nav.js';
+import { getParam, updateParams, shelfUrl } from './url.js';
 import { showSaved } from './notify.js';
 
 setupNav();
@@ -47,13 +36,12 @@ async function initHome() {
   // The search form submits with method="get", so the search ends up in the URL:
   // index.html?q=dune&type=title. Reading it back here means results can be bookmarked
   // and the Back button works.
-  const params = new URLSearchParams(window.location.search);
   let query;
   let type;
-  if (params.has('q')) {
+  if (getParam('q') !== null) {
     // A search was just submitted. A blank search means "show me everything" (popular books).
-    query = params.get('q').trim();
-    type = params.get('type') || 'title';
+    query = getParam('q').trim();
+    type = getParam('type') || 'title';
     if (query) setLastSearch(query, type);
     else clearLastSearch();
   } else {
@@ -61,12 +49,7 @@ async function initHome() {
     const last = getLastSearch();
     query = last ? last.query : '';
     type = last ? last.type : 'title';
-    if (query) {
-      const url = new URL(window.location);
-      url.searchParams.set('q', query);
-      url.searchParams.set('type', type);
-      history.replaceState(null, '', url);
-    }
+    if (query) updateParams({ q: query, type });
   }
   if (!['title', 'author', 'subject'].includes(type)) type = 'title';
   queryInput.value = query;
@@ -94,7 +77,7 @@ async function initHome() {
     query = '';
     queryInput.value = '';
     typeSelect.value = 'title';
-    history.replaceState(null, '', window.location.pathname);
+    updateParams({ q: null, type: null });
     updateClearButton();
     queryInput.focus();
     loadResults('', 'title');
@@ -140,7 +123,7 @@ async function initBook() {
   const form = document.getElementById('shelf-form');
 
   // URL parameter: book.html?id=OL45804W
-  const id = new URLSearchParams(window.location.search).get('id');
+  const id = getParam('id');
   if (!id || !/^OL\d+W$/.test(id)) {
     article.innerHTML = '<p class="message message-error">No book selected. <a href="index.html">Search for a book</a> to see its details.</p>';
     return;
@@ -183,7 +166,7 @@ async function initBook() {
     showSaved({
       title: isUpdate ? 'Shelf updated' : 'Saved!',
       message: `"${book.title}" is on your ${SHELF_NAMES[entry.shelf]} shelf.`,
-      linkHref: `shelves.html?shelf=${entry.shelf}`,
+      linkHref: shelfUrl(entry.shelf),
       linkText: `View ${SHELF_NAMES[entry.shelf]} shelf`,
     });
     form.querySelector('button[type="submit"]').textContent = 'Update shelf';
@@ -202,7 +185,7 @@ function initShelves() {
   const heading = document.querySelector('.shelves-header h1');
 
   // URL parameter: shelves.html?shelf=finished opens with that filter chosen
-  const startShelf = new URLSearchParams(window.location.search).get('shelf');
+  const startShelf = getParam('shelf');
   if (startShelf && SHELF_NAMES[startShelf]) filter.value = startShelf;
 
   function render() {
@@ -220,10 +203,7 @@ function initShelves() {
 
   filter.addEventListener('change', () => {
     // Keep the URL in sync so the filtered view can be bookmarked or shared
-    const url = new URL(window.location);
-    if (filter.value === 'all') url.searchParams.delete('shelf');
-    else url.searchParams.set('shelf', filter.value);
-    history.replaceState(null, '', url);
+    updateParams({ shelf: filter.value === 'all' ? null : filter.value });
     render();
   });
 

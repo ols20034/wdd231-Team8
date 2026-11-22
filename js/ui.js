@@ -1,21 +1,8 @@
 // ui.js: functions that build HTML from data and put it on the page.
-// Use the hard-coded markup in the .html files as your template for these.
-//
-// TODO (after checkpoint):
-// export function renderBookCards(books, container) {
-//   // build the <li class="book-card"> markup from index.html for each book
-//   // link each card to `book.html?id=${workId}`  <- URL parameter requirement
-// }
-//
-// export function renderBookDetail(book) { }
-//
-// export function renderShelfList(books, container) {
-//   // build <li class="shelf-item"> markup from shelves.html; show .empty-state if none
-// }
-// ui.js: functions that build HTML from data and put it on the page.
 
 import { coverUrl } from './api.js';
 import { SHELF_NAMES } from './storage.js';
+import { bookUrl } from './url.js';
 
 // Text from the API goes inside our HTML, so escape it first.
 export function escapeHtml(text) {
@@ -38,13 +25,7 @@ function placeholderCover(book, extraClass = '') {
 
 // Real cover image if Open Library has one, otherwise a colored placeholder.
 // alt is empty on cards because the title is right underneath it.
-// function coverMarkup(book, size, extraClass = '', alt = '') {
-//   if (!book.coverId) return placeholderCover(book, extraClass);
-//   return `<img class="cover cover-img ${extraClass}" src="${coverUrl(book.coverId, size)}"
-//     alt="${escapeHtml(alt)}" width="180" height="270" loading="lazy"
-//     data-id="${escapeHtml(book.id)}" data-title="${escapeHtml(book.title)}">`;
-// }
-
+// priority = true for the first few cards so they load right away (helps Lighthouse LCP).
 function coverMarkup(book, size, extraClass = '', alt = '', priority = false) {
   if (!book.coverId) return placeholderCover(book, extraClass);
 
@@ -87,7 +68,7 @@ export function showMessage(container, text, type = 'info') {
 export function renderBookCards(books, container) {
   container.innerHTML = books.map((book, index) => `
     <li class="book-card" style="--delay: ${index * 60}ms">
-      <a href="book.html?id=${encodeURIComponent(book.id)}">
+      <a href="${bookUrl(book.id)}">
         ${coverMarkup(book, 'M', '', '', index < 4)}
         <h3 class="book-title">${escapeHtml(book.title)}</h3>
         <p class="book-author">${escapeHtml(book.author)}</p>
@@ -135,7 +116,7 @@ export function renderShelfList(books, container) {
     <li class="shelf-item" style="--delay: ${index * 60}ms">
       ${coverMarkup(book, 'S', 'cover-small')}
       <div class="shelf-item-info">
-        <h2 class="book-title"><a href="book.html?id=${encodeURIComponent(book.id)}">${escapeHtml(book.title)}</a></h2>
+        <h2 class="book-title"><a href="${bookUrl(book.id)}">${escapeHtml(book.title)}</a></h2>
         <p class="book-author">${escapeHtml(book.author)}</p>
         <p>
           <span class="badge badge-${book.shelf}">${SHELF_NAMES[book.shelf]}</span>

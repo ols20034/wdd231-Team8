@@ -58,10 +58,10 @@
   margin: 0;
 }
 
-/* Mobile first: 2 columns, more on bigger screens */
+/* As many 160px-wide columns as fit (2 on phones, more on bigger screens) */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: var(--space-md);
 }
 
@@ -104,11 +104,6 @@
   color: var(--color-muted);
   font-size: 0.9rem;
 }
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: var(--space-md);
-}
 
 @media (min-width: 640px) {
   .search-form {
@@ -119,4 +114,11 @@
   .search-actions {
     margin-top: calc(1.6rem + var(--space-xs));
   }
+}
+
+/* Books arrive from the API after the page first paints. Making <main> at least one
+   screen tall keeps the footer below the fold, so the cards loading in don't push it
+   down (that counted as layout shift, CLS, in Lighthouse). */
+main {
+  min-height: 100vh;
 }

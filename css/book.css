@@ -171,3 +171,9 @@
     width: 100%;
   }
 }
+/* The book details arrive from the API after the page first paints. Making <main> at
+   least one screen tall keeps the footer below the fold, so the details loading in
+   don't push it down (that counted as layout shift, CLS, in Lighthouse). */
+main {
+  min-height: 100vh;
+}

@@ -19,6 +19,8 @@ Search for books with the Open Library API and save them to your own shelves: Wa
 | `ui.js` | Builds HTML from data (book cards, detail view, shelf list, stats) |
 | `form.js` | Validation rules for the shelf form |
 | `nav.js` | Hamburger drop-down menu on small screens |
+| `notify.js` | The "Saved!" toast (wide screens) or dialog (phones) after saving a book |
+| `url.js` | Reads and updates URL parameters, and builds links to `book.html?id=` and `shelves.html?shelf=` |
 
 ## Requirements checklist
 | Requirement | Where |
@@ -30,8 +32,8 @@ Search for books with the Open Library API and save them to your own shelves: Wa
 | CSS animation | Card fade-up, hover lift, menu slide-down, hamburger → X, loading spinner |
 | Responsive design | Mobile-first CSS with breakpoints at 640px, 768px, 960px |
 | UX & accessibility | Skip link, labels, `aria-live` messages, focus styles, reduced-motion support |
-| URL parameters | `index.html?q=&type=`, `book.html?id=`, `shelves.html?shelf=` |
-| Modules | `type="module"` with `import`/`export` across six files |
+| URL parameters | `index.html?q=&type=`, `book.html?id=`, `shelves.html?shelf=` (all handled in `url.js`) |
+| Modules | `type="module"` with `import`/`export` across eight files |
 
 ## Run locally
 Open with VS Code Live Server. Modules won't load from `file://`.
